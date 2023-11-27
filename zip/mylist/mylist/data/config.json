@@ -1,0 +1,26 @@
+{
+    "WiFi":
+        {
+            "ssid": "SKY5TGSD",
+            "password": "4fHSSNHLXzBq"
+        },
+ //   "_comment": "These are names I've come across, plase add more",
+    "station":
+        {
+            "Name": "Acton Town Main Line",
+            "ID": "910GACTONML"
+        },
+ //   "_comment1": "How to get & filter input information, read the json data provided by TFL, modify as you please",
+ //   "_comment5": "Use filterKeys to reduce the size of the JSON object, important on memory limited devices",
+    "filterKeys": [ "platformName", "destinationName", "timeToStation"],
+    "server": "https://api.tfl.gov.uk",
+ //   "_comment2": "%s or {} replaced by station ID",
+    "URL": {
+        "formatC":  "%s/StopPoint/%s/Arrivals",
+        "formatPython":  "{0}/StopPoint/{1}/Arrivals"
+    },
+    "PlatformsToDisplay": [3,4],
+ //   "_comment3": "How to display the information",
+    "rowsPerPlatform": 2,
+    "refreshDelaySeconds": 30
+}

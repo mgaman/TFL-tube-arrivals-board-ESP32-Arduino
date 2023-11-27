@@ -1,0 +1,44 @@
+#include <Arduino.h>
+#include <ArduinoJson.h>
+extern const char *jsonData;
+// Acton Town  raw data 8k - 2 platforms 1 line
+// input raw data about 7K, input to https://arduinojson.org/v6/assistant/#/step1 and got answer 12300
+// observed figure for unfiltered data 5000
+// observed figure for filter on 3 fields 613 4 fields 776
+// Earls Court raw data 22k - 6 platforms 2 lines
+// recommended 25456
+// unfiltered 11870
+// filtered 2036
+StaticJsonDocument<3000> doc;
+StaticJsonDocument<200> filter;
+const char *keys[] = {
+    "destinationName",
+    "timeToStation",
+ //   "direction",
+    "platformName",
+    "lineName"
+};
+
+ void setup() {
+    Serial.begin(115200);
+    // make a filter, add [0] index as data is an array
+    for (int i=0; i< sizeof(keys)/sizeof(const char *);i++) {
+        filter[0][keys[i]] = true;
+    }
+    serializeJsonPretty(filter, Serial);
+    Serial.printf("filter %d bytes\n",filter.memoryUsage());
+    DeserializationError  derr = 
+        deserializeJson(doc, jsonData, DeserializationOption::Filter(filter));
+    //    deserializeJson(doc, jsonData);
+    if (!derr) {
+        serializeJsonPretty(doc, Serial);
+        Serial.printf("doc %d bytes\n",doc.memoryUsage());
+    }
+    else {
+        Serial.println(derr.c_str());
+    }
+ }
+
+void loop(){
+
+}
