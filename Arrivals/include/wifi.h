@@ -1,2 +1,2 @@
-void wifiInit();
+bool wifiInit();
 bool  wifiConnect();

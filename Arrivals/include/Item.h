@@ -6,11 +6,12 @@
 class Item
 {
 public:
-  Item(int at, const char *dest, int pn)
+  Item(int at, const char *dest, const char *toward,int pn)
   {
     estArrivTime = at;
     platform = pn;
     destination = dest;
+    towards = toward;
   };
   ~Item()
   {
@@ -24,6 +25,10 @@ public:
   {
     return destination;
   }
+  const char *getTowards()
+  {
+    return towards;
+  }
   int getPlatform()
   {
     return platform;
@@ -33,5 +38,6 @@ private:
   int estArrivTime; // seconds
   int platform;
   const char *destination;
+  const char *towards;
 };
 

@@ -10,7 +10,7 @@
 #include "AP.h"
 
 const char *path = "/config.json"; 
-StaticJsonDocument<1500> config;
+StaticJsonDocument<2000> config;
 
 List<AP> aplist;
 
@@ -31,6 +31,7 @@ int compareRSSI(const void *l, const void *r)
 void setup() {
   Serial.begin(115200);
   delay(1000);
+#if 1
   // open file system & load config file
   if (!SPIFFS.begin(false))
   {
@@ -62,14 +63,23 @@ void setup() {
     }
     //free(buff); // DO NOT FREE - the data is all in here
   }
+#endif
+#if 1
   // scan local wifi providers
   int numSsid = WiFi.scanNetworks();
+  while (numSsid == -1) {
+    Serial.print("+");
+    delay(50);
+    numSsid = WiFi.scanNetworks();
+  }
   for (int i = 0; i<numSsid; i++) {
     Serial.print(WiFi.SSID(i));
     Serial.print(": ");
     Serial.println(WiFi.RSSI(i));
     aplist.add(AP(WiFi.SSID(i).c_str(),WiFi.RSSI(i)));
   }
+#endif
+#if 1
   // now sort the list, the lower the RSSI the stronger the signal
   aplist.sort(compareRSSI);
   Serial.println("-------------------");
@@ -100,9 +110,9 @@ void setup() {
   else
     Serial.printf("No key %s\r\n",ssid);
   }
+#endif
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
 }
 

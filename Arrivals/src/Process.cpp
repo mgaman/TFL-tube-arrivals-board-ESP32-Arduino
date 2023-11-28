@@ -7,6 +7,7 @@
 #include "jsonHandler.h"
 #include "Item.h"
 #include "display.h"
+void displayItem(List<Item> *pLI);
 
 /***
  * Use config to filter data by platform number
@@ -36,7 +37,7 @@ void processAll()
 #ifdef DEBUGxx
           Serial.printf("Add index %d %d %s %d\r\n", itemIndex, getETA(row), getDestinationName(row), pn);
 #endif
-          li[itemIndex].add(Item(getETA(row), getDestinationName(row), pn));
+          li[itemIndex].add(Item(getETA(row), getDestinationName(row), getTowardsName(row), pn));
         }
         else {
 #ifdef DEBUGxx

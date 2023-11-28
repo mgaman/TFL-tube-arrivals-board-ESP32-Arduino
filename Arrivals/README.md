@@ -62,4 +62,8 @@ Many online tutorials show an LCD being powered from the 5V pin of an ESP32. Not
 - Refreshing data, if data is missing should I age previous data?  is that legitimate as is it no longer TFL data? 
 - Platform numbers are expressed as verbose text e.g "Eastbound Platform 6". In extracting the number I skip all non-digits until arriving at the first digit and converting from there. So far this has worked without problems.
 - Inconsistency. For example, Earls Court station data has key:value pairs *destinationName:Heathrow Terminal 2 & 3* and *"towards":Heathrow T123 + 5* so should I display destinationName or towards? Acton Main Line only has destinationName, towards is always blank. See [Earls Court](https://tfl.gov.uk/tube/stop/940GZZLUECT/earls-court-underground-station?lineId=piccadilly)
-
+## ToDO
+### Rotary Encoder
+Choose station dynamically
+### Smarter Formatting
+Move *filterKeys* from root folder to per station (so I can use *towards* instead of *destinationName*). 

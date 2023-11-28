@@ -88,10 +88,17 @@ const char *urlFormat()
 {
     return (const char *)config["URL"]["formatC"];
 }
-
-const char *getShortName(const char *longName)
+/// @brief Check if one of the paramaters has a shortened version
+/// @param destinationName 
+/// @param towards   Note may be zero length
+/// @return Shortene
+const char *getShortName(const char *destinationName,const char *towards)
 {
     const char *shortName = NULL;
+    const char *longName = strlen(towards) == 0? destinationName : towards;
+#ifdef DEBUG
+    Serial.printf("D %s T %s L %s\r\n",destinationName,towards,longName);
+#endif
     if (config["substitutes"].containsKey(longName))
     {
         shortName = config["substitutes"][longName];
@@ -100,6 +107,7 @@ const char *getShortName(const char *longName)
 #endif
     }
     else {
+        shortName = longName;
 #ifdef DEBUG
         Serial.printf("No sub %s \r\n",longName);
 #endif        
@@ -153,6 +161,9 @@ const char *getDestinationName(int rowNumber) {
     return doc[rowNumber]["destinationName"];
 }
 
+const char *getTowardsName(int rowNumber) {
+    return doc[rowNumber]["towards"];
+}
 int getNumberOfRows() {
     int nor = doc.size();
 #ifdef DEBUG

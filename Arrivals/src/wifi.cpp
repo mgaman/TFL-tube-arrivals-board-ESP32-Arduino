@@ -3,6 +3,7 @@
 #include <List.hpp>
 #include <ArduinoJson.h>
 #include "AP.h"
+#include "display.h"
 
 List<AP> aplist;
 extern StaticJsonDocument<CONFIG_SIZE> config;
@@ -25,24 +26,29 @@ int compareRSSI(const void *l, const void *r)
  * @brief  Scan all access points and make a list sorted by RSSI
  *
  */
-void wifiInit()
+bool wifiInit()
 {
     // scan local wifi providers
+    bool rc = false;
     int numSsid = WiFi.scanNetworks();
+    if (numSsid != -1) {
 #ifdef DEBUG
-    Serial.print(numSsid); Serial.println(" networks");
+        Serial.print(numSsid); Serial.println(" networks");
 #endif
-    for (int i = 0; i < numSsid; i++)
-    {
+        for (int i = 0; i < numSsid; i++)
+        {
 #ifdef DEBUG
-        Serial.print(WiFi.SSID(i));
-        Serial.print(": ");
-        Serial.println(WiFi.RSSI(i));
+            Serial.print(WiFi.SSID(i));
+            Serial.print(": ");
+            Serial.println(WiFi.RSSI(i));
 #endif
-        aplist.add(AP(WiFi.SSID(i).c_str(), WiFi.RSSI(i)));
+            aplist.add(AP(WiFi.SSID(i).c_str(), WiFi.RSSI(i)));
+        }
+        // now sort the list, the lower the RSSI the stronger the signal
+        aplist.sort(compareRSSI);
+        rc = true;
     }
-    // now sort the list, the lower the RSSI the stronger the signal
-    aplist.sort(compareRSSI);
+    return rc;
 }
 
 /**
@@ -74,6 +80,8 @@ bool wifiConnect()
             Serial.println("\nConnected to the WiFi network");
             Serial.print("Local ESP32 IP: ");
             Serial.println(WiFi.localIP());
+            displayClear();
+            displayLine(0,0,WiFi.localIP().toString().c_str());
             rc = true;
         }
         else

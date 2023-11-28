@@ -5,10 +5,10 @@
 #include <SPIFFS.h>
 #include "jsonHandler.h"
 #include "wifi.h"
+#include "display.h"
+
 
 void jsonInit(fs::FS &fs,const char *path);
-void displayInit();
-void displayNoData();
 
 
 #define FORMAT_SPIFFS_IF_FAILED true
@@ -52,10 +52,17 @@ void setup()
 #ifdef DEBUG
     Serial.println(URL);
 #endif
-    wifiInit();
-    if (!wifiConnect()) {
-        Serial.println("Failed to connect to WiFi");
-        while (true);
+    if (wifiInit()) {
+        if (!wifiConnect()) {
+            Serial.println("Failed to connect to WiFi");
+            displayLine(0,0,"Failed to connect to WiFi");
+            while (true);
+        }
+    }
+    else {
+        Serial.println("No WiFi available");
+        displayLine(0,0,"No WiFi available");
+        while (true) {}
     }
 }
 

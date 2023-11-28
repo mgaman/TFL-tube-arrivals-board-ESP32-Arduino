@@ -12,6 +12,7 @@ void displayInit()
 {
   lcd.init();
   lcd.backlight();
+  lcd.clear();
 }
 
 /// @brief
@@ -50,7 +51,7 @@ void displayItem(List<Item> *pLI)
       Item *pI = pLI->getPointer(j);
       // Arrival time round down seconds to minutes
       int aTime = pI->getArrivalTime() / 60;
-      const char *dest = getShortName(pI->getDestination());
+      const char *dest = getShortName(pI->getDestination(),pI->getTowards());
       if (dest == NULL)
         dest = (char *)pI->getDestination();
       lcd.printf("%d %s", pI->getPlatform(), dest);
@@ -73,4 +74,9 @@ void displayItem(List<Item> *pLI)
 void displayNoData() {
   lcd.clear();
   lcd.print("Missing data");
+}
+
+void displayLine(int col,int row,const char *text) {
+  lcd.setCursor(col,row);
+  lcd.print(text);
 }
