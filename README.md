@@ -62,11 +62,9 @@ This is a Visual Studio, Platform IO project where compilation options are conta
 ### Wiring
 Many online tutorials show an LCD being powered from the 5V pin of an ESP32. Note this will <b>NOT</b> work as an ESP32 cannot supply enough power. My setup uses a breadboard power supply powered by an external power source. I2C connections are direct from ESP32 to LCD/I2C without 3.3V to 5V conversion.
 ## Issues 
-- May not be any data for chosen platform, display blank or ignore? 
-- Data not always in chronological order -- Fixed by sorting.  
 - Refreshing data, if data is missing should I age previous data?  is that legitimate as is it no longer TFL data? 
 - Platform numbers are expressed as verbose text e.g "Eastbound Platform 6". In extracting the number I skip all non-digits until arriving at the first digit and converting from there. So far this has worked without problems.  
-- Time To Arrical is expresses in seconds, I convert this to minutes and round down.
+- Time To Arrival is expressed in seconds, I convert this to minutes and round down.
 ## ToDo
 ### Rotary Encoder
 Choose station dynamically
