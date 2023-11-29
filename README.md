@@ -1,5 +1,4 @@
 <p align="center"><img src="images/setup.jpg"></p>
-<p align="center"><img src="images/tftArrivals_bb.png"></p>
 
 [Watch the video](https://youtu.be/iu9-asFMyhk)
 # Introduction
@@ -61,6 +60,8 @@ This is a Visual Studio, Platform IO project where compilation options are conta
 - LOGRAW Print all incoming data to Serial.
 ## LCD Display
 ### Wiring
+<p align="center"><img src="images/tftArrivals_bb.png"></p>
+
 Many online tutorials show an LCD being powered from the 5V pin of an ESP32. Note this will <b>NOT</b> work as an ESP32 cannot supply enough power. My setup uses a breadboard power supply powered by an external power source. I2C connections are direct from ESP32 to LCD/I2C without 3.3V to 5V conversion.
 ## Issues 
 - Refreshing data, if data is missing should I age previous data?  is that legitimate as is it no longer TFL data? 
