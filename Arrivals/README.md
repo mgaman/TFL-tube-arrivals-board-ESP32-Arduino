@@ -1,3 +1,4 @@
+[Watch the video](https://youtu.be/iu9-asFMyhk)
 # Introduction
 This projects retrieves publically available data from [Transport For London](https://api-portal.tfl.gov.uk/apis), parses the relevant data and displays it on a 2004 LCD screen.  
 While my initial attempt was achieved quickly I soon realised that the correct approach would be to develop a generic application controlled by a configuration file. And this, I hope, is whats I have achieved.  
@@ -67,3 +68,5 @@ Many online tutorials show an LCD being powered from the 5V pin of an ESP32. Not
 Choose station dynamically
 ### Smarter Formatting
 Move *filterKeys* from root folder to per station (so I can use *towards* instead of *destinationName*). 
+### Smoother display update
+Do not clear screen, just update where changed
