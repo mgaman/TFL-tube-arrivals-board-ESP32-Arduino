@@ -8,6 +8,7 @@ No data is hard wired into the code, no wifi credentials, station ID's, screen s
 My solution was developed on an ESP32 development board. These are widely available, provide WiFi connectivity, ample RAM and flash memory and cheap. It should be feasible to repeat this project on a similar board like Raspberry Pi Zero W or Pico W.  
 My screen is an 2004 LCD via an I2C interface. Porting to another screen should be easy as my code is compartmentalized. All screen activity is contained within a single source file
 ## Architecture
+<b>All the relevant code and data are in the Arrivals folder. Other folders are just ad-hoc test programs</b>
 ### main.cpp
 Initialises the system and periodically accesses TFL to retrieve fresh data.
 ### wifi.cpp
