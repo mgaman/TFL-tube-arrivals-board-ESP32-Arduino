@@ -1,4 +1,5 @@
 <p align="center"><img src="images/setup.jpg"></p>
+<p align="center"><img src="images/tftArrivals_bb.png"></p>
 
 [Watch the video](https://youtu.be/iu9-asFMyhk)
 # Introduction
