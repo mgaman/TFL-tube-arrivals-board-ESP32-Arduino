@@ -7,6 +7,13 @@
     },
     "stations": [
         {
+            "Name": "Turnham Green",
+            "ID": "940GZZLUTNG",
+            "PlatformsToDisplay": [1,2,3,4],
+            "rowsPerPlatform": 1,
+            "jsonSize": 1200
+        },
+        {
             "Name": "Earls Court",
             "ID": "940GZZLUECT",
             "PlatformsToDisplay": [
