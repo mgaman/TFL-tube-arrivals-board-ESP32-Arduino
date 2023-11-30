@@ -7,7 +7,13 @@
 StaticJsonDocument<DOC_SIZE> doc;
 StaticJsonDocument<CONFIG_SIZE> config;
 StaticJsonDocument<FILTER_SIZE> filter;
+
+int defaultStation = -1;
+
 void processAll();
+#ifdef USE_ROTARY
+int selectStation();
+#endif
 
 void jsonHandler(String raw)
 {
@@ -65,7 +71,11 @@ void jsonInit(fs::FS &fs, const char *path)
         Serial.printf("filter %d bytes\n", filter.memoryUsage());
 #endif
         //   free(buff);  // DO NOT free memory, config data is here
-        //stationid();
+#ifdef USE_ROTARY
+        defaultStation = selectStation();
+#else
+        defaultStation = config["defaultStation"];
+#endif
     }
 }
 unsigned getDelay()
@@ -78,100 +88,125 @@ const char *server()
 }
 const char *stationid()
 {
-    const char *stationid=(const char *)config["stations"][config["defaultStation"]]["ID"];
+    const char *stationid = (const char *)config["stations"][defaultStation]["ID"];
 #ifdef DEBUG
-    Serial.printf("Station ID %s\r\n",stationid);
+    Serial.printf("Station ID %s\r\n", stationid);
 #endif
     return stationid;
+}
+
+int getNumberOfStations()
+{
+    return config["stations"].size();
+}
+
+const char *getStationName(int index)
+{
+    const char *stationname = (const char *)config["stations"][index]["Name"];
+#ifdef DEBUG
+    Serial.printf("Station ID %s\r\n", stationname);
+#endif
+    return stationname;
 }
 const char *urlFormat()
 {
     return (const char *)config["URL"]["formatC"];
 }
 /// @brief Check if one of the paramaters has a shortened version
-/// @param destinationName 
+/// @param destinationName Note, may be zero length
 /// @param towards   Note may be zero length
 /// @return Shortene
-const char *getShortName(const char *destinationName,const char *towards)
+const char *getShortName(const char *destinationName, const char *towards)
 {
     const char *shortName = NULL;
-    const char *longName = strlen(towards) == 0? destinationName : towards;
+    // use towards if present
+    const char *longName = strlen(towards) > 0 ? towards : destinationName;
 #ifdef DEBUG
-    Serial.printf("D %s T %s L %s\r\n",destinationName,towards,longName);
+    Serial.printf("D %s T %s L %s\r\n", destinationName, towards, longName);
 #endif
     if (config["substitutes"].containsKey(longName))
     {
         shortName = config["substitutes"][longName];
 #ifdef DEBUG
-        Serial.printf("long %s short %s\r\n",longName,shortName);
+        Serial.printf("long %s short %s\r\n", longName, shortName);
 #endif
     }
-    else {
+    else
+    {
         shortName = longName;
 #ifdef DEBUG
-        Serial.printf("No sub %s \r\n",longName);
-#endif        
+        Serial.printf("No sub %s \r\n", longName);
+#endif
     }
     return shortName;
 }
 
-int rowsPerPlatform() {
-//    return config["rowsPerPlatform"];
-    int rpp = config["stations"][config["defaultStation"]]["rowsPerPlatform"];
+int rowsPerPlatform()
+{
+    //    return config["rowsPerPlatform"];
+    int rpp = config["stations"][defaultStation]["rowsPerPlatform"];
 #ifdef DEBUG
-    Serial.printf("rows per platform %d\r\n",rpp);
+    Serial.printf("rows per platform %d\r\n", rpp);
 #endif
     return rpp;
 }
 
-int getPlatformToDisplay(int index) {
-//    return config["PlatformsToDisplay"][index];
-    int ptd = config["stations"][config["defaultStation"]]["PlatformsToDisplay"][index];
+int getPlatformToDisplay(int index)
+{
+    //    return config["PlatformsToDisplay"][index];
+    int ptd = config["stations"][defaultStation]["PlatformsToDisplay"][index];
     return ptd;
 }
 
-
-int getNumberOfPlatforms() {
-//    return config["PlatformsToDisplay"].size();
-    int nop = config["stations"][config["defaultStation"]]["PlatformsToDisplay"].size();
+int getNumberOfPlatforms()
+{
+    //    return config["PlatformsToDisplay"].size();
+    int nop = config["stations"][defaultStation]["PlatformsToDisplay"].size();
 #ifdef DEBUG
-    Serial.printf("Number of platforms %d\r\n",nop);
+    Serial.printf("Number of platforms %d\r\n", nop);
 #endif
     return nop;
 }
 
 // Arrival Data API
-int getArrivalPlatformNumber(int rowNumber) {
-    // make an assumption here that text is xxxxxxnnn where x is non-digit and n is digit 
+int getArrivalPlatformNumber(int rowNumber)
+{
+    // make an assumption here that text is xxxxxxnnn where x is non-digit and n is digit
     const char *c = doc[rowNumber]["platformName"];
 #ifdef DEBUG
-//    Serial.printf("row %d %s\r\n",rowNumber,(const char *)doc[rowNumber]["platformName"]);
-    Serial.printf("Row %d ",rowNumber);
-    Serial.printf("P %s\r\n",(const char *)doc[rowNumber]["platformName"]);
+    //    Serial.printf("row %d %s\r\n",rowNumber,(const char *)doc[rowNumber]["platformName"]);
+    Serial.printf("Row %d ", rowNumber);
+    Serial.printf("P %s\r\n", (const char *)doc[rowNumber]["platformName"]);
 #endif
-    while (!isdigit(*c)) c++;   // skip non-digits
+    while (!isdigit(*c))
+        c++; // skip non-digits
     return atoi(c);
 }
 
-int getETA(int rowNumber) {
+int getETA(int rowNumber)
+{
     return doc[rowNumber]["timeToStation"];
 }
 
-const char *getDestinationName(int rowNumber) {
+const char *getDestinationName(int rowNumber)
+{
     return doc[rowNumber]["destinationName"];
 }
 
-const char *getTowardsName(int rowNumber) {
+const char *getTowardsName(int rowNumber)
+{
     return doc[rowNumber]["towards"];
 }
-int getNumberOfRows() {
+int getNumberOfRows()
+{
     int nor = doc.size();
 #ifdef DEBUG
-    Serial.printf("NOR %d\r\n",nor);
+    Serial.printf("NOR %d\r\n", nor);
 #endif
     return nor;
 }
 
-bool rowContainsKey(int row,const char *key) {
+bool rowContainsKey(int row, const char *key)
+{
     return doc[row].containsKey(key);
 }

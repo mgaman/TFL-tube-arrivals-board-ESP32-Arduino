@@ -3,11 +3,14 @@ void jsonHandler(String raw);
 unsigned getDelay();
 const char *server();
 const char *stationid();
+const char *getStationName(int index);
+int getNumberOfStations();
 const char *urlFormat();
 const char *getShortName(const char *,const char *);
 int rowsPerPlatform();
 int getPlatformToDisplay(int);
 int getNumberOfPlatforms();
+
 // arrival data API
 int getArrivalPlatformNumber(int);
 int getETA(int);

@@ -33,17 +33,17 @@ void processAll()
       if (pn == getPlatformToDisplay(itemIndex))
       {
         // Have noticed cases where destinationName is missing
-        if (rowContainsKey(row,"destinationName")) {
+//        if (rowContainsKey(row,"destinationName")) {
 #ifdef DEBUGxx
           Serial.printf("Add index %d %d %s %d\r\n", itemIndex, getETA(row), getDestinationName(row), pn);
 #endif
           li[itemIndex].add(Item(getETA(row), getDestinationName(row), getTowardsName(row), pn));
-        }
-        else {
+  //      }
+    //    else {
 #ifdef DEBUGxx
-          Serial.println("Missing destination name");
+      //    Serial.println("Missing destination name");
 #endif          
-        }
+        //}
       }
       else {
 #ifdef DEBUGxx

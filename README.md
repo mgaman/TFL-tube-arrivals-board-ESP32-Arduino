@@ -40,11 +40,12 @@ An array of station objects, each characterised by the following key:value pairs
 - PlatformsToDisplay An integer array of which platformS to display from the arrival data.
 - rowsPerPlatform How many rows of data per platform to be displayed.  The size of the *PlatformsToDisplay* array times *rowsPerPlatform* should not exceed the number of rows on the display device.
 ### defaultStation
-The index of *stations* to be displayed.   
+If the code was compiled with the *USE_ROTARY* macro then this item is ignored as the default station ID is selected [here](#rotary-encoder).  
+If the code was not compiled with the  *USE_ROTARY* macro this index of *stations* to be displayed.   
 ### filterKeys
 A list of keys for filtering incoming Arrivals data. You should familiarise yourself with the JSON structure of TFL API to understand this.  
 Note that the Arrivals JSON data has 2 fields showing the destination name, *destinationName* and *towards*.  
-While *destinationName* always appears *towards* may or may not. If present I prefer to use *towards* as it gives a more accurate picture. For example the Picadilly Line to Heathrow shows *"destinationName":"Heathrow Terminal 2 & 3"* and *"towards":"Heathrow T123 + 5"* for the same train.
+At least one of *destinationName* and *towards* appears, sometimes both. If present I prefer to use *towards* as it gives a more accurate picture. For example the Picadilly Line to Heathrow shows *"destinationName":"Heathrow Terminal 2 & 3"* and *"towards":"Heathrow T123 + 5"* for the same train.
 ### server
 The web address for TFL API.
 ### URL
@@ -53,23 +54,31 @@ The format for combining the server address and station ID for retrieving data f
 How often to request new data from TFL. Note that an occasional user does not need to request permission from TFL for access. A commercial user (> 500 request per minutes) needs to get an application key.
 ### substitutes
 As mentioned before many destination names are too long to fit on the display. *substitutes* is an array of key:value pairs where *key* is the long destination name as seen in incoming data and *value* is a short name that conveys the same information and fits the available space. You may add new key:value pairs as necessary. Note this will affect the size of memory to be allocated for the config JSON object.
-## Compilation
+# Rotary Encoder
+If enabled, by compiling with the *USE_ROTARY* macro set, a dialog is initiated upon startup. The names of the stations in the config.json file are displayed on the LCD screen. To move between the stations rotate the decoder. When the desired station is displayed, press the push button to select it.
+# Compilation
 This is a Visual Studio, Platform IO project where compilation options are contained in the *platformio.ini* file, section *build_flags*.  
 - CONFIG_SIZE=nnn FILTER_SIZE=nnn DOC_SIZE=nnn. These affect memory allocated for JSON objects config,filter and doc. The default values here should suffice. The only time you probably need to make a change is for DOC. My default value of 3000 is sufficient for busy Baker Street with its many platforms but there may be a station out there that needs more. To make an estimate get a block of JSON from a station and visit [here](https://arduinojson.org/v6/assistant/#/step1). This will give an indications of the space needed for unfiltered data. In my experience filtering reduces that by a factor of 8.
 - ARDUINOJSON_ENABLE_COMMENTS The JSON standard does not allow embedded comments. ArduinoJSON handles embedded comments if this macro is defined.
 - DEBUG Turn on general debugging data. Hopefully not needed.
 - LOGRAW Print all incoming data to Serial.
-## LCD Display
-### Wiring
+- USE_ROTARY Enable the Rotary Enable code.
+- RECLK Rotary Encloder CLK pin
+- DREDT Rotary Encloder DT pin
+- DRESW  Rotary Encloder SW pin
+# LCD Display
+## Wiring
 <p align="center"><img src="images/tftArrivals_bb.png"></p>
 
 Many online tutorials show an LCD being powered from the 5V pin of an ESP32. Note this will <b>NOT</b> work as an ESP32 cannot supply enough power. My setup uses a breadboard power supply powered by an external power source. I2C connections are direct from ESP32 to LCD/I2C without 3.3V to 5V conversion.
-## Issues 
+# Updating the config.json file
+The classic tool for reading and writing data between an ESP32 and computer is *esptool.py*, however this tool deals with blocks of flash and is not interested whether that block of flash is executable code or SPIFFS data.  
+In Platform.IO *esptool.py* is encapsulated in a user friendly interface to make it easy to create an SPIFFS file system image and upload that image to the ESP32.  
+The user is expected to be familiar with this procedure.
+# Issues 
 - Refreshing data, if data is missing should I age previous data?  is that legitimate as is it no longer TFL data? 
 - Platform numbers are expressed as verbose text e.g "Eastbound Platform 6". In extracting the number I skip all non-digits until arriving at the first digit and converting from there. So far this has worked without problems.  
 - Time To Arrival is expressed in seconds, I convert this to minutes and round down.
 ## ToDo
-### Rotary Encoder
-Choose station dynamically
-### Smoother display update
+## Smoother display update
 Do not clear screen, just update where changed
