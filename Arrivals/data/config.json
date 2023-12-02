@@ -1,9 +1,9 @@
 {
     "$type": "Tfl.Api.Presentation.Entities.Prediction, Tfl.Api.Presentation.Entities",
     "WiFi": {
-        "henry": "9876543210",
-        "SKY5TGSD": "4fHSSNHLXzBq",
-        "DavidsRedmi": "9876543210"
+        "home": "*****",
+        "phone hotspot": "*****",
+        "Mums house": "******"
     },
     "stations": [
         {

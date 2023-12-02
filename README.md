@@ -1,6 +1,6 @@
-<p align="center"><img src="images/setup.jpg"></p>
+<p align="center"><img src="images/tftsetup2.jpg"></p>
 
-[Watch the video](https://youtu.be/iu9-asFMyhk)
+[Watch the video](https://youtu.be/K2WdxyyRPac)
 # Introduction
 This projects retrieves publically available data from [Transport For London](https://api-portal.tfl.gov.uk/apis), parses the relevant data and displays it on a 2004 LCD screen.  
 While my initial attempt was achieved quickly I soon realised that the correct approach would be to develop a generic application controlled by a configuration file. And this, I hope, is whats I have achieved.  
@@ -25,6 +25,8 @@ JSON does not lend itself to sorting so my solution is to make and array of *Lis
 ### Display.cpp
 Display takes the top number of items in the list and sends them to the display device.  
 Some compromises are in order. A line of 20 characters formatted as Platform Number, Destination and Arrival Time (in minutes) only has 15 characters to show the Destination. Many destinations in the incoming data are much more verbose e.g. on the Elizabeth Line Heathrow Terminal 4 is shown as <b>Heathrow Terminal 4 Underground Station</b>. By using a substition table I replace that with <b>Heathrow T4</b>
+### RotaryEncoder.cpp
+Handles the operation of the rotaty encoder to select the station to be displayed. Only relevant when *USE_ROTARY* macro enabled.
 ## TFL API
 The URL for getting a wodge of data (in JSON format) is https://api.tfl.gov.uk/StopPoint/910GACTONML/Arrivals where *910GACTONML* is the Station ID for Acton Town Main Line.  
 To find the station ID for your station do a search https://api.tfl.gov.uk/StopPoint/Search/????? where *?????* is the name (or partial name) of what you are looking for. Note the search is case insensitive.  
@@ -35,7 +37,7 @@ The configuration file *config.json* is comprised of the following sections
 A list of key:value pairs where *key* is a known SSID and *value* the password to coonect to that SSID
 ### stations
 An array of station objects, each characterised by the following key:value pairs.
-- Name   Not actually used yet, string
+- Name   Displayed by the rotary encoder dialog.
 - ID The ID of an TFL StopPoint, type 'tube' e.g. *910GACTONML* for Acton Main Line.
 - PlatformsToDisplay An integer array of which platformS to display from the arrival data.
 - rowsPerPlatform How many rows of data per platform to be displayed.  The size of the *PlatformsToDisplay* array times *rowsPerPlatform* should not exceed the number of rows on the display device.
@@ -66,8 +68,7 @@ This is a Visual Studio, Platform IO project where compilation options are conta
 - RECLK Rotary Encloder CLK pin
 - DREDT Rotary Encloder DT pin
 - DRESW  Rotary Encloder SW pin
-# LCD Display
-## Wiring
+# Wiring
 <p align="center"><img src="images/tftArrivals_bb.png"></p>
 
 Many online tutorials show an LCD being powered from the 5V pin of an ESP32. Note this will <b>NOT</b> work as an ESP32 cannot supply enough power. My setup uses a breadboard power supply powered by an external power source. I2C connections are direct from ESP32 to LCD/I2C without 3.3V to 5V conversion.
