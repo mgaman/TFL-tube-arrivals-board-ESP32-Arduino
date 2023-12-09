@@ -19,7 +19,7 @@ void processAll()
   // make a list for each platform
   int numItems = getNumberOfPlatforms();
   List<Item> li[numItems];
-#ifdef DEBUGxx
+#ifdef DEBUG
   Serial.print("List size:");
   Serial.println(numItems);
 #endif
@@ -34,19 +34,19 @@ void processAll()
       {
         // Have noticed cases where destinationName is missing
 //        if (rowContainsKey(row,"destinationName")) {
-#ifdef DEBUGxx
+#ifdef DEBUG
           Serial.printf("Add index %d %d %s %d\r\n", itemIndex, getETA(row), getDestinationName(row), pn);
 #endif
           li[itemIndex].add(Item(getETA(row), getDestinationName(row), getTowardsName(row), pn));
   //      }
     //    else {
-#ifdef DEBUGxx
+#ifdef DEBUG
       //    Serial.println("Missing destination name");
 #endif          
         //}
       }
       else {
-#ifdef DEBUGxx
+#ifdef DEBUG
         Serial.printf("no pn match %d %d %d\r\n",itemIndex,pn,getPlatformToDisplay(itemIndex));   
 #endif  
       }

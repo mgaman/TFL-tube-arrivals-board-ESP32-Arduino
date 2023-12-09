@@ -3,7 +3,7 @@
 [Watch the video](https://youtu.be/K2WdxyyRPac)
 # Introduction
 This projects retrieves publically available data from [Transport For London](https://api-portal.tfl.gov.uk/apis), parses the relevant data and displays it on a 2004 LCD screen.  
-While my initial attempt was achieved quickly I soon realised that the correct approach would be to develop a generic application controlled by a configuration file. And this, I hope, is whats I have achieved.  
+While my initial attempt was achieved quickly I soon realised that the correct approach would be to develop a generic application controlled by a configuration file. And this, I hope, is what I have achieved.  
 No data is hard wired into the code, no wifi credentials, station ID's, screen sizes etc. All is contained in a JSON file stored externally to the code.  
 My solution was developed on an ESP32 development board. These are widely available, provide WiFi connectivity, ample RAM and flash memory and cheap. It should be feasible to repeat this project on a similar board like Raspberry Pi Zero W or Pico W.  
 My screen is an 2004 LCD via an I2C interface. Porting to another screen should be easy as my code is compartmentalized. All screen activity is contained within a single source file
@@ -21,29 +21,29 @@ This class encapsulates the essential data of 1 arrival at a platform, its Platf
 ### Process.cpp
 The incoming data has 4 characteristics of interest, Destination, towards Time of Arrival (expressed in seconds) and Platform Number.  
 Becauses of the limitations of the display device one has to select which data that can be shown. The 2004 LCD can only show 4 lines. For a small station e.g. Acton Main Line with only 2 platforms that means we can show 2 arrivals per platform. A busier station e.g. Earls Court has 6 platforms so we have to choose a maximum of 4. That also limits us to 1 arrival per platform.  
-JSON does not lend itself to sorting so my solution is to make and array of *List*. Each list contains instances of the *Item* class. Each list is sorted by *TimeToStation* and fed to the, final, display stage.
+JSON does not lend itself to sorting so my solution is to make and array of *List*. Each list contains instances of the *Item* class for a single platform. Each list is then sorted by *TimeToStation* and fed to the, final, display stage.
 ### Display.cpp
 Display takes the top number of items in the list and sends them to the display device.  
 Some compromises are in order. A line of 20 characters formatted as Platform Number, Destination and Arrival Time (in minutes) only has 15 characters to show the Destination. Many destinations in the incoming data are much more verbose e.g. on the Elizabeth Line Heathrow Terminal 4 is shown as <b>Heathrow Terminal 4 Underground Station</b>. By using a substition table I replace that with <b>Heathrow T4</b>
 ### RotaryEncoder.cpp
-Handles the operation of the rotaty encoder to select the station to be displayed. Only relevant when *USE_ROTARY* macro enabled.
+Handles the operation of the rotary encoder to select the station to be displayed. Only relevant when *USE_ROTARY* macro enabled.
 ## TFL API
 The URL for getting a wodge of data (in JSON format) is https://api.tfl.gov.uk/StopPoint/910GACTONML/Arrivals where *910GACTONML* is the Station ID for Acton Town Main Line.  
-To find the station ID for your station do a search https://api.tfl.gov.uk/StopPoint/Search/????? where *?????* is the name (or partial name) of what you are looking for. Note the search is case insensitive.  
-Scan the returned JSON file for the ID you need.
+To find the station ID for your station do a search https://api.tfl.gov.uk/StopPoint/Search/xxxxx where *xxxxx* is the name (or partial name) of what you are looking for. Note the search is case insensitive.  
+Scan the returned JSON file for the ID you need. NOTE is the search term is not too specific you will get lots of irrelevant data e.g. you are looking for *Acton Main Line* a search on *acton* will return, amongst other stuff, every bus stop in Acton as well as the ID for Acton Main Line.
 ## Configuration
 The configuration file *config.json* is comprised of the following sections
 ### WiFi
-A list of key:value pairs where *key* is a known SSID and *value* the password to coonect to that SSID
+A list of key:value pairs where *key* is a known SSID and *value* the password to connect to that SSID
 ### stations
 An array of station objects, each characterised by the following key:value pairs.
 - Name   Displayed by the rotary encoder dialog.
-- ID The ID of an TFL StopPoint, type 'tube' e.g. *910GACTONML* for Acton Main Line.
-- PlatformsToDisplay An integer array of which platformS to display from the arrival data.
+- ID The ID of an TFL StopPoint e.g. *910GACTONML* for Acton Main Line.
+- PlatformsToDisplay An integer array of which platforms to display from the arrival data.
 - rowsPerPlatform How many rows of data per platform to be displayed.  The size of the *PlatformsToDisplay* array times *rowsPerPlatform* should not exceed the number of rows on the display device.
 ### defaultStation
 If the code was compiled with the *USE_ROTARY* macro then this item is ignored as the default station ID is selected [here](#rotary-encoder).  
-If the code was not compiled with the  *USE_ROTARY* macro this index of *stations* to be displayed.   
+If the code was not compiled with the  *USE_ROTARY* macro this index (origin 0) of *stations* to be displayed.   
 ### filterKeys
 A list of keys for filtering incoming Arrivals data. You should familiarise yourself with the JSON structure of TFL API to understand this.  
 Note that the Arrivals JSON data has 2 fields showing the destination name, *destinationName* and *towards*.  
@@ -78,7 +78,7 @@ In Platform.IO *esptool.py* is encapsulated in a user friendly interface to make
 The user is expected to be familiar with this procedure.
 # Issues 
 - Refreshing data, if data is missing should I age previous data?  is that legitimate as is it no longer TFL data? 
-- Platform numbers are expressed as verbose text e.g "Eastbound Platform 6". In extracting the number I skip all non-digits until arriving at the first digit and converting from there. So far this has worked without problems.  
+- Platform numbers are expressed as verbose text e.g "Eastbound Platform 6". To extracting the number I skip all non-digits until arriving at the first digit and converting from there. So far this has worked without problems.  
 - Time To Arrival is expressed in seconds, I convert this to minutes and round down.
 ## ToDo
 ## Smoother display update
