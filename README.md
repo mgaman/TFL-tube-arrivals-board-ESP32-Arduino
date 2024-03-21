@@ -71,7 +71,7 @@ This is a Visual Studio, Platform IO project where compilation options are conta
 # Wiring
 <p align="center"><img src="images/tftArrivals_bb.png"></p>
 
-Many online tutorials show an LCD being powered from the 5V pin of an ESP32. Note this will <b>NOT</b> work as an ESP32 cannot supply enough power. My setup uses a breadboard power supply powered by an external power source. I2C connections are direct from ESP32 to LCD/I2C without 3.3V to 5V conversion.
+Many online tutorials show an LCD being powered from the 5V pin of an ESP32. Note 9this will <b>NOT</b> work as an ESP32 cannot supply enough power. My setup uses a breadboard power supply powered by an external power source. I2C connections are direct from ESP32 to LCD/I2C without 3.3V to 5V conversion.
 # Updating the config.json file
 The classic tool for reading and writing data between an ESP32 and computer is *esptool.py*, however this tool deals with blocks of flash and is not interested whether that block of flash is executable code or SPIFFS data.  
 In Platform.IO *esptool.py* is encapsulated in a user friendly interface to make it easy to create an SPIFFS file system image and upload that image to the ESP32.  
@@ -83,3 +83,8 @@ The user is expected to be familiar with this procedure.
 ## ToDo
 ## Smoother display update
 Do not clear screen, just update where changed
+# Versions
+## 0.0.1
+Original version
+## 0.0.2
+Windows only bug. Source does not compile. File *Arrivals/Include/wifi.h* clashes with *WiFi.h* of the Arduino suite. Renamed to *WiFiAr.h* and modified *main.cpp* to include the new name.

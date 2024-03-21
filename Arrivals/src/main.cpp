@@ -4,7 +4,7 @@
 #include <FS.h>
 #include <SPIFFS.h>
 #include "jsonHandler.h"
-#include "wifi.h"
+#include "WiFiAr.h"
 #include "display.h"
 
 
