@@ -4,7 +4,7 @@
 #include "Item.h"
 #include "jsonHandler.h"
 
-LiquidCrystal_I2C lcd(0x3F, 20, 4); // set the LCD address to 0x27 for a 16 chars and 2 line display
+LiquidCrystal_I2C lcd(I2C_ADDR, 20, 4); // set the LCD address to 0x27/0x3f for a 16 chars and 2 line display
 
 #define INCREMENT true
 

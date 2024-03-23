@@ -64,10 +64,11 @@ This is a Visual Studio, Platform IO project where compilation options are conta
 - ARDUINOJSON_ENABLE_COMMENTS The JSON standard does not allow embedded comments. ArduinoJSON handles embedded comments if this macro is defined.
 - DEBUG Turn on general debugging data. Hopefully not needed.
 - LOGRAW Print all incoming data to Serial.
-- USE_ROTARY Enable the Rotary Enable code.
+- USE_ROTARY Enable the Rotary Enable code. <b>Disable</b> if not used else the code hangs.  
 - RECLK Rotary Encloder CLK pin
 - DREDT Rotary Encloder DT pin
 - DRESW  Rotary Encloder SW pin
+- I2C_ADDR I2C address of the Liquid Crystal device. I have encountered 0x27 and 0x3F. There may be others out there.
 # Wiring
 <p align="center"><img src="images/tftArrivals_bb.png"></p>
 
@@ -88,3 +89,5 @@ Do not clear screen, just update where changed
 Original version
 ## 0.0.2
 Windows only bug. Source does not compile. File *Arrivals/Include/wifi.h* clashes with *WiFi.h* of the Arduino suite. Renamed to *WiFiAr.h* and modified *main.cpp* to include the new name.
+## 0.0.3
+I2C Address of Liquid Crystal device was hard wired to 0x3F but some have the address 0x27. Add to compile time macro I2C_ADDR to *platform.ini/build_flags*
